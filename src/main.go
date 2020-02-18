@@ -4,12 +4,14 @@ import (
 	// "encoding/json"
 	"encoding/json"
 	"fmt"
-	"github.com/davecgh/go-spew/spew" // for debuggin purposes
+	"time"
+	// "github.com/davecgh/go-spew/spew" // for debuggin purposes
+	"log"
+	"net/http"
+
 	prmt "github.com/gitchander/permutation"
 	"github.com/gorilla/mux"
 	"github.com/umahmood/haversine"
-	"log"
-	"net/http"
 )
 
 //// haversine library and optimal path finding
@@ -19,12 +21,6 @@ type CoordArray []haversine.Coord
 
 func (ps CoordArray) Len() int      { return len(ps) }
 func (ps CoordArray) Swap(i, j int) { ps[i], ps[j] = ps[j], ps[i] }
-
-var testList []haversine.Coord = []haversine.Coord{
-	haversine.Coord{Lat: 10.1, Lon: 20.2},
-	haversine.Coord{Lat: 10, Lon: 1003.3},
-	haversine.Coord{Lat: 10, Lon: 12.},
-}
 
 func PathLength(path CoordArray) (mi, km float64) {
 	var totalDistanceKm float64 = 0
@@ -50,7 +46,6 @@ func bestRoute(path CoordArray) (float64, float64, CoordArray) {
 
 	for p.Next() {
 		mi, km := PathLength(path)
-		fmt.Println(mi, km, path)
 		// add logging to ensure its working
 		if bestPath == nil {
 			// fist pass - set everything
@@ -65,8 +60,6 @@ func bestRoute(path CoordArray) (float64, float64, CoordArray) {
 			bestPath = path
 		}
 	}
-	fmt.Println("optimial distance")
-	fmt.Println(bestDistanceMi, bestDistanceKm, bestPath)
 	return bestDistanceMi, bestDistanceKm, bestPath
 }
 
@@ -77,42 +70,26 @@ func Router() *mux.Router {
 	return router
 }
 
-// example json request
-// {
-// 	"length": 3,
-// 	"points": [
-// 		{"lat": 10.2, "lon": 90.2},
-// 		{"lat": 920.2, "lon": 123.111},
-// 		{"lat": 32.2, "lon": 153.22}
-// 	]
-// }
-
 type userRequest struct {
-	length int
-	path   []haversine.Coord
+	Length int
+	Path   []haversine.Coord
 }
 
 // middleware - wrappers around optimization functions to read json and return json
 func optimizeUserPath(w http.ResponseWriter, r *http.Request) {
 	var temp userRequest
 
-	err := json.NewDecoder(r.Body).Decode(&temp)
-	if err != nil {
-		// Panic(err)
-	}
-
-	r.ParseForm()
-	spew.Sdump(r.Body)
+	json.NewDecoder(r.Body).Decode(&temp)
 	log.Printf("%+v", temp)
 
-	bestRoute(temp.path)
+	beforeCalculation := time.Now()
+	mi, km, _ := bestRoute(temp.Path)
+	afterCalculation := time.Now()
+	fmt.Fprintf(w, "{\"mi\": %f, \"km\": %f, \"time\": \"%s\"}", mi, km, afterCalculation.Sub(beforeCalculation))
 }
 
 func main() {
-	fmt.Println(testList)
-	bestRoute(testList)
-
 	r := Router()
-	fmt.Printf("Starting server on the port 8000...")
+	fmt.Printf("Starting server on the port 8000...\n")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
