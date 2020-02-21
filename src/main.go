@@ -63,10 +63,21 @@ func bestRoute(path CoordArray) (float64, float64, CoordArray) {
 	return bestDistanceMi, bestDistanceKm, bestPath
 }
 
+// server constance
+const (
+	STATIC_DIR = "/views/"
+	PORT       = "8000"
+)
+
 // Router will need ot be exported when it is moved into its own package later on
 func Router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/optimize_route", optimizeUserPath).Methods("POST")
+
+	router.
+		PathPrefix(STATIC_DIR).
+		Handler(http.StripPrefix(STATIC_DIR, http.FileServer(http.Dir("."+STATIC_DIR))))
+
 	return router
 }
 
@@ -96,6 +107,6 @@ func optimizeUserPath(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	r := Router()
-	fmt.Printf("Starting server on the port 8000...\n")
-	log.Fatal(http.ListenAndServe(":8000", r))
+	fmt.Printf("Starting server on the port %s...\n", PORT)
+	log.Fatal(http.ListenAndServe(":"+PORT, r))
 }
