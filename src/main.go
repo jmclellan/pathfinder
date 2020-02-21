@@ -83,9 +83,15 @@ func optimizeUserPath(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%+v", temp)
 
 	beforeCalculation := time.Now()
-	mi, km, _ := bestRoute(temp.Path)
+	mi, km, path := bestRoute(temp.Path)
 	afterCalculation := time.Now()
-	fmt.Fprintf(w, "{\"mi\": %f, \"km\": %f, \"time\": \"%s\"}", mi, km, afterCalculation.Sub(beforeCalculation))
+	fmt.Fprintf(w, "{\"mi\": %f, \"km\": %f, \"time\": \"%s\", \"path\": [", mi, km, afterCalculation.Sub(beforeCalculation))
+	fmt.Fprintf(w, "{\"Lat\": %f, \"Lon\": %f}", path[0].Lat, path[0].Lon)
+	for i := 1; i < len(path); i++ {
+		fmt.Fprintf(w, ", {\"Lat\": %f, \"Lon\": %f}", path[i].Lat, path[i].Lon)
+	}
+
+	fmt.Fprintf(w, "]}")
 }
 
 func main() {
