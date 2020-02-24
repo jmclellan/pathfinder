@@ -13,3 +13,12 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+## build directory
+build-dir/
+
+# vagrant dir
+.vagrant
+src/github.com/
+pkg
+npm-debug.log
