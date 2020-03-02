@@ -7,11 +7,11 @@ pet project where users can use go, enter coordinates of sereral places they wou
 - Golang, Javascript, React, more to come
 
 # TODO:
-- [] POC complete
-    - [] users have a portal where they can enter a list of coordinates.
-    - [] users can submit these coordinates to the server and have an optimized route returned to them
-        - [] backend support
-        - [] front end support
+- [ ] POC complete
+    - [ ] users have a portal where they can enter a list of coordinates.
+    - [ ] users can submit these coordinates to the server and have an optimized route returned to them
+        - [x] backend support
+        - [ ] front end support
     - [] basic front end styling
     - [x] basic make file added
         - [x] command to rebuild go server
