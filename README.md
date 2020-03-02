@@ -47,3 +47,13 @@ pet project where users can use go, enter coordinates of sereral places they wou
     - [ ] profile react componants
     - [ ] compile react code to static js files and serve directly via nginx or apache
     - [ ] profile reverse proxy
+- [ ] front end improvements
+    - [ ] add visualization for coordinates
+    - [ ] add map
+    - [ ] add visualization during optimization (connect all points and randomly iterate through paths)
+- [ ] functionality improvements
+    - [ ] users can select a starting point from which all paths begin
+    - [ ] users can select an ending point at which all paths end (potentially the starting point)
+    - [ ] users users can see their search history
+    - [ ] users can look up famous lanmarks by name and their long & lat will be added automatically
+    - [ ] some sort of admin portal where we can see uptodate monitoring of the system
