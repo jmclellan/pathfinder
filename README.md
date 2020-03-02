@@ -8,26 +8,42 @@ pet project where users can use go, enter coordinates of sereral places they wou
 
 # TODO:
 - [ ] POC complete
-    - [ ] users have a portal where they can enter a list of coordinates.
+    - [x] users have a portal where they can enter a list of coordinates.
     - [ ] users can submit these coordinates to the server and have an optimized route returned to them
         - [x] backend support
         - [ ] front end support
-    - [] basic front end styling
+        - [ ] communication between the two via reverse proxy for single enpoint
+    - [x] basic front end styling
     - [x] basic make file added
         - [x] command to rebuild go server
         - [x] command to run node server 
     - [x] abstraction between host machine (runs in a virtual machine)
     - [x] project can be cloned and built on a clean machine (untested but as long as a machine supports vagrant there shouldnt be any issue)
-    - [] nginx acts as revers proxy giving a single endpoint for users to go to
 
 # Wishlist
-- [] simulated annealing used to find route
-- [] ffi interaction between rust and golang
-- [] authentication for user sign on
-- [] backplaneing requests - ensure that we reject additional requests instead of running the server into the ground
-- [] logging to a centralized location
-- [] 
-- [] log queries & results for later analysis
-    - [] sample queries are checked against a true solution and speed
-- [] investigate hosting accross multiple machines
-- [] compile react to static files so that they can be served directly by nginx 
+- [ ] optimize path finding
+    - [ ] decrease number of permutations searched to cut search space in half
+    - [ ] add nieve random searching to allow for solution to more end points
+    - [ ] add simulated annealing find best path
+    - [ ] add controls to be able to commit a specific amount of computation time to calculating an optimal route
+    - [ ] use go ffi to leverage speed and efficiency of a rust library
+- [ ] integrations
+    - [ ] add user accounts & authentication
+    - [ ] add database to periodically store user trips for analysis later
+        - [ ] explore storing summary data
+        - [ ] store longer data set which can be used to test proposed solution against true solution and measured for speed
+- [ ] add centralized logging
+    - [ ] log rotate set up upon vagrant up
+    - [ ] logging levels used
+- [ ] improve system resiliancy
+    - [ ] Dockerize/Pod-ify application
+        - [ ] use system to manage clusters
+    - [ ] application on vm to restart services as required
+    - [ ] do not allow system to get overloaded when optimizing requests
+        - [ ] backplaneing returns appropriate error code instead of taking on too much work
+        - [ ] queue requests if they cannot currently be run
+    - [ ] investigate hosting application over multiple machines
+- [ ] optimize website
+    - [ ] profile react componants
+    - [ ] compile react code to static js files and serve directly via nginx or apache
+    - [ ] profile reverse proxy
