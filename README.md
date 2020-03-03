@@ -57,3 +57,14 @@ pet project where users can use go, enter coordinates of sereral places they wou
     - [ ] users users can see their search history
     - [ ] users can look up famous lanmarks by name and their long & lat will be added automatically
     - [ ] some sort of admin portal where we can see uptodate monitoring of the system
+    - [ ] explore use of web gl http://examples.webglearth.com/#markers
+    - [ ] users can log into an account of their own
+    - [ ] users can go to a profile page and edit information about themselves
+    - [ ] road data taken into account
+- [ ] host version of the site online somewhere
+- [ ] create tests
+- [ ] connect tests to github to testing will happen on pushes
+- [ ] deployment
+    - [ ] expore exporting as an rpm or set of rpms
+- [ ] System resiliancy
+    - [ ] improve go instalation

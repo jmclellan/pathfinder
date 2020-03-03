@@ -17,7 +17,7 @@ class CoordConsole extends React.Component {
             // here is where we will store the componenats
             coordinates: []
         }
-    }
+        }
 
 
     addCoordiate = () => {
@@ -62,7 +62,6 @@ function coordinateContainer(props) {
         <h3>
             Lon is <i>{props.Lon}</i>
         </h3>
-        // add a delete button
     </li>
 }
 

@@ -12,8 +12,8 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "hashicorp/bionic64"
-
+  config.vm.box = "centos/7"
+  
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -64,13 +64,31 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    apt-get install -y apache2
-    apt-get install -y golang
-    apt-get install -y npm
-    apt-get install -y htop
-    apt-get install -y nginx
-    apt-get install -y vim
-    pwd
+    sudo yum -y update
+    sudo yum install -y apache2 golang npm htop nginx vim npm git
+    
+    sudo yum install -y nmap wget
+
+    # add epel repo to get nginx
+    sudo yum install -y epel-release
+    # install nginx
+    sudo yum install -y nginx
+
+    #install golang
+    wget https://dl.google.com/go/go1.13.3.linux-amd64.tar.gz
+    tar -xzf go1.13.3.linux-amd64.tar.gz
+    mv go /usr/local
+    # agressive rights adjustment TODO: improve this
+    sudo chmod 777 -R /usr/local/
+
+    # add npm repo
+    curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+    # install node
+    sudo yum install -y nodejs
+    sudo yum install -y gcc-c++ make
+    # symlink it to nodejs to avoid make error down the line
+    # TODO: improve this as well
+    ln -s /usr/bin/nodejs /usr/bin/node
+
   SHELL
 end

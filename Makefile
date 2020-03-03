@@ -3,34 +3,43 @@ TAG = $(shell git rev-parse --short HEAD)
 GO_EXE_NAME = pathfinder-$(VER)-$(TAG)
 OUTPUT_DIR = build-dir
 
+# MAKE_EXE = $(which make)
+# hardcoded path ties to provision set up in Vagrantfile
+GO_EXE = /usr/local/go/bin/go
+export PATH=$PATH:$(GO_EXE)
+
+export GOROOT = /usr/local/go
 export GOPATH = $(abspath .)
 
 dev-pathfinder:
-	make clean
-	make get-dependencies
-	make build-go-server
+	/usr/bin/make clean
+	/usr/bin/make get-dependencies
+	/usr/bin/make make build-go-server
 	$(make run-go-server)
 	$(make start-node-server)
 	$(make start-nginx)
 
 
 get-dependencies:
-	go get github.com/gitchander/permutation
-	go get github.com/gorilla/mux
-	go get github.com/umahmood/haversine
+	$(GO_EXE) get github.com/gitchander/permutation
+	$(GO_EXE) get github.com/gorilla/mux
+	$(GO_EXE) get github.com/umahmood/haversine
 
 build-go-server:
-	go build -o $(OUTPUT_DIR)/$(GO_EXE_NAME) -x src/main.go
+	$(GO_EXE) build -o $(OUTPUT_DIR)/$(GO_EXE_NAME) -x src/main.go
 
-run-go-server:
+run-go-server: #add target
 	./$(OUTPUT_DIR)/$(GO_EXE_NAME)
 
 clean:
-	rm -rf $(OUTPUT_DIR)
+	/usr/bin/rm -rf $(OUTPUT_DIR)
 
-start-node-server:
-	npm start --prefix src/react-code/
+start-node-server: # not fixed
+	/usr/bin/npm start --prefix /vagrant_data/src/react-code/
 
 start-nginx:
-	sudo nginx -c /vagrant_data/src/nginx/nginx.conf
+	# use supervisorctl to manage this 
+	/usr/sbin/nginx -c /vagrant_data/src/nginx/nginx.conf
 
+test:
+	echo "hey this is working $(which rm) test test"
