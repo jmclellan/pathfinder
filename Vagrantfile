@@ -67,7 +67,7 @@ Vagrant.configure("2") do |config|
     sudo yum -y update
     sudo yum install -y apache2 golang npm htop nginx vim npm git
     
-    sudo yum install -y nmap wget
+    sudo yum install -y nmap wget lsof
 
     # add epel repo to get nginx
     sudo yum install -y epel-release
@@ -88,7 +88,9 @@ Vagrant.configure("2") do |config|
     sudo yum install -y gcc-c++ make
     # symlink it to nodejs to avoid make error down the line
     # TODO: improve this as well
-    ln -s /usr/bin/nodejs /usr/bin/node
+    
+    # not currently necessary
+    # ln -s /usr/bin/nodejs /usr/bin/node
 
   SHELL
 end

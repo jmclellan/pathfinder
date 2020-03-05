@@ -13,6 +13,7 @@ pet project where users can use go, enter coordinates of sereral places they wou
         - [x] backend support
         - [ ] front end support
         - [ ] communication between the two via reverse proxy for single enpoint
+        - [ ] programs run as a service
     - [x] basic front end styling
     - [x] basic make file added
         - [x] command to rebuild go server
@@ -21,6 +22,7 @@ pet project where users can use go, enter coordinates of sereral places they wou
     - [x] project can be cloned and built on a clean machine (untested but as long as a machine supports vagrant there shouldnt be any issue)
 
 # Wishlist
+adding improvements/tweaks to be made here before they are pulled into a next version
 - [ ] optimize path finding
     - [ ] decrease number of permutations searched to cut search space in half
     - [ ] add nieve random searching to allow for solution to more end points
@@ -68,3 +70,8 @@ pet project where users can use go, enter coordinates of sereral places they wou
     - [ ] expore exporting as an rpm or set of rpms
 - [ ] System resiliancy
     - [ ] improve go instalation
+- [ ] add title
+- [ ] logging improvements
+    - [ ] centralized logging service
+    - [ ] log files written
+    - [ ] log rotate initialized

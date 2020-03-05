@@ -72,11 +72,10 @@ const (
 // Router will need ot be exported when it is moved into its own package later on
 func Router() *mux.Router {
 	router := mux.NewRouter()
-	router.HandleFunc("/api/optimize_route", optimizeUserPath).Methods("POST")
-
-	router.
-		PathPrefix(STATIC_DIR).
-		Handler(http.StripPrefix(STATIC_DIR, http.FileServer(http.Dir("."+STATIC_DIR))))
+	router.HandleFunc("/api/optimize_route/", optimizeUserPath).Methods("POST")
+	router.HandleFunc("/api/optimize_route/", pulse).Methods("GET")
+	router.HandleFunc("/pulse", pulse).Methods("GET", "POST")
+	router.HandleFunc("/", whatTheFuck)
 
 	return router
 }
@@ -86,8 +85,18 @@ type userRequest struct {
 	Path   []haversine.Coord
 }
 
+func whatTheFuck(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("what in the actual fuck")
+}
+
+func pulse(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("call to pulse triggered!")
+	fmt.Fprint(w, "{'message': 'alive and accessible'}")
+}
+
 // middleware - wrappers around optimization functions to read json and return json
 func optimizeUserPath(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("Optimizing user path!")
 	var temp userRequest
 
 	json.NewDecoder(r.Body).Decode(&temp)
