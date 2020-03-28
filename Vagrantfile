@@ -73,6 +73,7 @@ Vagrant.configure("2") do |config|
     sudo yum install -y epel-release
     # install nginx
     sudo yum install -y nginx
+    # start nginx
 
     #install golang
     wget https://dl.google.com/go/go1.13.3.linux-amd64.tar.gz
@@ -91,6 +92,9 @@ Vagrant.configure("2") do |config|
     
     # not currently necessary
     # ln -s /usr/bin/nodejs /usr/bin/node
+
+    ## TODO add this later
+    # npm install leaflet react-leaflet
 
   SHELL
 end

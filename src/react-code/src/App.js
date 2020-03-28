@@ -4,6 +4,10 @@ import './App.css';
 import $ from "jquery";
 import ReactDOM from 'react-dom';
 
+// // for attempt at map
+// import { Map as LeafletMap, GeoJSON, Marker, Popup } from 'react-leaflet';
+// import worldGeoJSON from 'geojson-world-map';
+
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -15,11 +19,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends React.Component {
     render() {
         return (
+            <div>
             <Container>
                 <Jumbotron>
                     <CoordConsole />
                 </Jumbotron>
-            </Container>)
+            </Container>
+            {/* <GeoJsonMap /> */}
+            </div>)
+            
     }
 }
 
@@ -36,9 +44,9 @@ class CoordConsole extends React.Component {
     }
 
 
-    addCoordiate = (lat, lon) => {
+    addCoordiate = (Lat, Lon) => {
         // debugger;
-        let coordinate = { lat: lat, lon: lon }
+        let coordinate = { Lat: Lat, Lon: Lon }
         console.log(coordinate)
         this.setState({
             coordinates: [coordinate, ...this.state.coordinates]
@@ -48,6 +56,16 @@ class CoordConsole extends React.Component {
     submitCoordiates = () => {
         // ajax request
         console.log("SUBMIT THE COORDINATES!")
+        let postData = {"Length": this.state.coordinates.length,
+                    "Path": this.state.coordinates
+                    }
+        $.post("/api/optimize_route/", JSON.stringify(postData))
+         .then((resp) => {
+            let responseObj = JSON.parse(resp)
+            this.setState({coordinates: responseObj.path})
+            console.log(responseObj)
+            })
+        console.log("Coordinates submitted!")
     }
 
     render() {
@@ -57,21 +75,26 @@ class CoordConsole extends React.Component {
                     <label>Enter your Coordinates one at a time!</label>
                     <Form.Group>
                         <Form.Label>Longitude</Form.Label>
-                        <Form.Control id="formLon" type="number" placeholder="" required inputRef={(ref) => { this.input.lon = ref }} />
+                        <Form.Control id="formLon" type="number" placeholder="" required inputRef={(ref) => { this.input.Lon = ref }} />
                         <Form.Control.Feedback type="invalid">
                             Please provide a valid longitude.
                         </Form.Control.Feedback>
 
                         <Form.Label>Latitude</Form.Label>
-                        <Form.Control id="formLat" type="number" required inputRef={(ref) => { this.input.lat = ref }} />
+                        <Form.Control id="formLat" type="number" required inputRef={(ref) => { this.input.Lat = ref }} />
                         <Form.Control.Feedback type="invalid">
                             Please provide a valid Latitude.
                     </Form.Control.Feedback>
 
-                        <Button type="button" onClick={(data) => this.addCoordiate(document.getElementById("formLat").value,
-                            document.getElementById("formLon").value)}>
-                            enter these coordinates
-                            </ Button>
+                        <Button type="button" onClick={(data) => 
+                            this.addCoordiate(Number(document.getElementById("formLat").value),
+                                              Number(document.getElementById("formLon").value))}>
+                            enter these coordinates!
+                        </ Button>
+                       
+                        <Button type="button" onClick={() => this.submitCoordiates()}> 
+                        Submit Coordiates 
+                        </Button> 
                     </Form.Group>
 
                 </Form>
@@ -81,11 +104,11 @@ class CoordConsole extends React.Component {
                         {
                             this.state.coordinates.map((coordinateData, index) => <CoordinateContainer key={index}
                                 locationName={"point " + (index + 1)}
-                                lat={coordinateData.lat}
-                                lon={coordinateData.lon}
+                                lat={coordinateData.Lat}
+                                on={coordinateData.Lon}
                                 removeElement={() => this.setState({
                                     coordinates: this.state.coordinates.filter((ele) =>
-                                        !(ele.lat === coordinateData.lat) && ele.lon === coordinateData.lon)
+                                        !(ele.Lat === coordinateData.Lat) && ele.Lon === coordinateData.Lon)
                                 })}
                             />
                             )
@@ -117,13 +140,47 @@ function CoordinateContainer(props) {
         <Collapse in={open}>
             <div id="example-collapse-text">
                 <h3>
-                    Lat is <i>{props.lat}</i>
+                    Lat is <i>{props.Lat}</i>
                 </h3>
                 <h3>
-                    Lon is <i>{props.lon}</i>
+                    Lon is <i>{props.Lon}</i>
                 </h3>
-            // add a delete button
             </div>
         </Collapse>
     </ListGroup.Item>
 }
+
+// class GeoJsonMap extends React.Component {
+//     render() {
+//       return (
+//         <LeafletMap
+//           center={[50, 10]}
+//           zoom={6}
+//           maxZoom={10}
+//           attributionControl={true}
+//           zoomControl={true}
+//           doubleClickZoom={true}
+//           scrollWheelZoom={true}
+//           dragging={true}
+//           animate={true}
+//           easeLinearity={0.35}
+//         >
+//           <GeoJSON
+//             data={worldGeoJSON}
+//             style={() => ({
+//               color: '#4a83ec',
+//               weight: 0.5,
+//               fillColor: "#1a1d62",
+//               fillOpacity: 1,
+//             })}
+//           />
+//           <Marker position={[50, 10]}>
+//             <Popup>
+//               Popup for any custom information.
+//             </Popup>
+//           </Marker>
+//         </LeafletMap>
+//       );
+//     }
+//   }
+  

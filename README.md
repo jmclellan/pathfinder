@@ -71,6 +71,7 @@ adding improvements/tweaks to be made here before they are pulled into a next ve
 - [ ] System resiliancy
     - [ ] improve go instalation
 - [ ] add title
+- [ ] add popup alerts for error messages
 - [ ] logging improvements
     - [ ] centralized logging service
     - [ ] log files written
