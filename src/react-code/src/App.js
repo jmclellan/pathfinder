@@ -105,7 +105,7 @@ class CoordConsole extends React.Component {
                             this.state.coordinates.map((coordinateData, index) => <CoordinateContainer key={index}
                                 locationName={"point " + (index + 1)}
                                 lat={coordinateData.Lat}
-                                on={coordinateData.Lon}
+                                lon={coordinateData.Lon}
                                 removeElement={() => this.setState({
                                     coordinates: this.state.coordinates.filter((ele) =>
                                         !(ele.Lat === coordinateData.Lat) && ele.Lon === coordinateData.Lon)
@@ -140,10 +140,10 @@ function CoordinateContainer(props) {
         <Collapse in={open}>
             <div id="example-collapse-text">
                 <h3>
-                    Lat is <i>{props.Lat}</i>
+                    Lat is <i>{props.lat}</i>
                 </h3>
                 <h3>
-                    Lon is <i>{props.Lon}</i>
+                    Lon is <i>{props.lon}</i>
                 </h3>
             </div>
         </Collapse>
