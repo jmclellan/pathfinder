@@ -6,33 +6,36 @@ pet project where users can use go, enter coordinates of sereral places they wou
 ## technologies
 - Golang, Javascript, React, more to come
 
+
+
 # TODO:
-- [x] POC complete
-    - [x] users have a portal where they can enter a list of coordinates.
-    - [x] users can submit these coordinates to the server and have an optimized route returned to them
-        - [x] backend support
-        - [x] front end support
-        - [x] communication between the two via reverse proxy for single enpoint
-    - [x] basic front end styling
-    - [x] basic make file added
-        - [x] command to rebuild go server
-        - [x] command to run node server 
-    - [x] abstraction between host machine (runs in a virtual machine)
-    - [x] project can be cloned and built on a clean machine (untested but as long as a machine supports vagrant there shouldnt be any issue)
+- [ ] alpha complete
+    - [ ] frontend
+        - [ ] add title
+        - [ ] add map
+            - [ ] add visualization for coordinates
+            - [ ] add visualization during optimization (connect all points and randomly iterate through paths)
+        - [ ] add popup alerts for error messages
+    - [ ] backend
+        - [ ] standardize path finding so we can easily add in new attemptes without having to rewrite frontend/backend interactions
+        - [ ] optimize path finding
+            - [ ] cached path finding to cut down on computation time
+            - [ ] add a nieve random search endpoint
+    - [ ] integrations
+        - [ ] add database to periodically store user trips for analysis later
+            - [ ] explore storing summary data
+            - [ ] store longer data set which can be used to test proposed solution against true solution and measured for speed
+        
+
 
 # Wishlist
 adding improvements/tweaks to be made here before they are pulled into a next version
 - [ ] optimize path finding
-    - [ ] decrease number of permutations searched to cut search space in half
-    - [ ] add nieve random searching to allow for solution to more end points
     - [ ] add simulated annealing find best path
     - [ ] add controls to be able to commit a specific amount of computation time to calculating an optimal route
     - [ ] use go ffi to leverage speed and efficiency of a rust library
 - [ ] integrations
     - [ ] add user accounts & authentication
-    - [ ] add database to periodically store user trips for analysis later
-        - [ ] explore storing summary data
-        - [ ] store longer data set which can be used to test proposed solution against true solution and measured for speed
 - [ ] add centralized logging
     - [ ] log rotate set up upon vagrant up
     - [ ] logging levels used
@@ -48,10 +51,6 @@ adding improvements/tweaks to be made here before they are pulled into a next ve
     - [ ] profile react componants
     - [ ] compile react code to static js files and serve directly via nginx or apache
     - [ ] profile reverse proxy
-- [ ] front end improvements
-    - [ ] add visualization for coordinates
-    - [ ] add map
-    - [ ] add visualization during optimization (connect all points and randomly iterate through paths)
 - [ ] functionality improvements
     - [ ] users can select a starting point from which all paths begin
     - [ ] users can select an ending point at which all paths end (potentially the starting point)
@@ -70,10 +69,25 @@ adding improvements/tweaks to be made here before they are pulled into a next ve
 - [ ] System resiliancy
     - [ ] improve go instalation
     - [ ] programs run as a service
-- [ ] add title
-- [ ] add popup alerts for error messages
 - [ ] logging improvements
     - [ ] centralized logging service
     - [ ] log files written
     - [ ] log rotate initialized
+- [ ] improve header
+    - [ ] login button floats to the far right right
+    - [ ] add log in page
     
+
+Past efforts:
+- [x] POC complete
+    - [x] users have a portal where they can enter a list of coordinates.
+    - [x] users can submit these coordinates to the server and have an optimized route returned to them
+        - [x] backend support
+        - [x] front end support
+        - [x] communication between the two via reverse proxy for single enpoint
+    - [x] basic front end styling
+    - [x] basic make file added
+        - [x] command to rebuild go server
+        - [x] command to run node server 
+    - [x] abstraction between host machine (runs in a virtual machine)
+    - [x] project can be cloned and built on a clean machine (untested but as long as a machine supports vagrant there shouldnt be any issue)

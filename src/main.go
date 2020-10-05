@@ -4,6 +4,8 @@ import (
 	// "encoding/json"
 	"encoding/json"
 	"fmt"
+	"math"
+	"math/rand"
 	"time"
 
 	// "github.com/davecgh/go-spew/spew" // for debuggin purposes
@@ -27,6 +29,7 @@ func (ps CoordArray) Len() int { return len(ps) }
 // Swap to fufil interface
 func (ps CoordArray) Swap(i, j int) { ps[i], ps[j] = ps[j], ps[i] }
 
+// PathLength is meant to find length between two paths
 func PathLength(path CoordArray) (mi, km float64) {
 	var totalDistanceKm float64 // 0 is the default zero value for float64
 	var totalDistanceMi float64
@@ -160,6 +163,112 @@ func generateCostTable(points DefinedCoordinateArray) costTable {
 	return costTable
 }
 
+// TODO: implement a simulated annealing implementation now
+// start with a random solution A and generate a related canditate solution B
+// if B is better than A we want to use B and restart. If A is better than B then we want to explore
+// use a temperature function to decide if we should explore candidate solutions in the region of B
+
+// wiki pseudo code
+
+// Let s = s0
+// For k = 0 through kmax (exclusive):
+// 	T ← temperature( (k+1)/kmax )
+// 	Pick a random neighbour, snew ← neighbour(s)
+// 	If P(E(s), E(snew), T) ≥ random(0, 1):
+// 		s ← snew
+// Output: the final state s
+
+// Tsp stands for traveling salesman and the struct encompases all of the recordkeeping required that will persist
+// through itterations.
+type Tsp struct {
+	totalPoints          int
+	bestRoute            DefinedCoordinateArray
+	bestRouteDistance    float64
+	currentRoute         DefinedCoordinateArray
+	currentRouteDistance float64
+	temp                 float64
+	distanceCache        map[subPath]distance
+}
+
+func (tsp *Tsp) degradeTemp() {
+	tsp.temp = tsp.temp * .9
+}
+
+// based on the current temperature find a relates path
+// we expect a higher temperature to cause a neighboring path with more differences when
+// compared to a lower temp
+func (tsp *Tsp) neighboringPath() DefinedCoordinateArray {
+	neighboringPath := tsp.currentRoute
+	upperBound := tsp.totalPoints - 1
+	var pointA, pointB int // initialized with a 0 value
+	for {
+		// pick random points until we have two different cities selected
+		pointA = rand.Intn(upperBound)
+		pointB = rand.Intn(upperBound)
+
+		if pointA != pointB {
+			break
+		}
+	}
+	// swap points in the base route to get a neighboring route
+	neighboringPath[pointA], neighboringPath[pointB] = neighboringPath[pointB], neighboringPath[pointA]
+
+	return neighboringPath
+}
+
+// calulateSubPathLength takes a subPathPair which is defined as two points that follow one another
+// if the id of the subpath is not already memoized it is calculated out and stored in the map
+func (tsp *Tsp) calculateSubPathLength(pointA, pointB DefinedCoordiante) distance {
+	pairID := subPath{pointA.id, pointB.id}
+	if dist, ok := tsp.distanceCache[pairID]; ok {
+		return dist
+	} else {
+		// we need to calculate it
+		mi, km := haversine.Distance(pointA.coordinate, pointB.coordinate)
+		dist = distance{mi, km}
+		// memozie it
+		altPairID := subPath{pointB.id, pointA.id}
+		tsp.distanceCache[pairID] = dist
+		tsp.distanceCache[altPairID] = dist
+		// return it
+		return dist
+	}
+}
+
+func (tsp *Tsp) calculatePathLength(path DefinedCoordinateArray) distance {
+	totalDist := distance{0, 0}
+	for i := 1; i < len(path); i++ {
+		nextPoint := path[i]
+		currPoint := path[i-1]
+		stepDist := tsp.calculateSubPathLength(currPoint, nextPoint)
+		totalDist.mi += stepDist.mi
+		totalDist.km += stepDist.km
+	}
+	return totalDist
+}
+
+func (tsp *Tsp) acceptanceProbability(newDist float64) float64 {
+	return math.Exp((tsp.currentRouteDistance - newDist) / temperature)
+}
+
+func (tsp *Tsp) acceptNewPath(proposedPathDist float64, proposedPath DefinedCoordinateArray) {
+	if proposedPathDist <= tsp.currentRouteDistance {
+		tsp.currentRoute = proposedPath
+		tsp.currentRouteDistance = proposedPathDist
+		if proposedPathDist < tsp.bestRouteDistance {
+			tsp.bestRoute = proposedPath
+			tsp.bestRouteDistance = proposedPathDist
+		}
+	} else {
+		// acceptanceProbability = tsp.acceptanceProbability(proposedPathDist)
+		// randomVal = rand.float64()
+		// if acceptanceProbability > randomVal {
+		// 	tsp.currentRoute = proposedPath
+		// 	tsp.currentRouteDistance = proposedPathDist
+		}
+	}
+}
+
 // server constants
 const (
 	PORT = "8000"
@@ -179,10 +288,6 @@ type userRequest struct {
 	Length int
 	Path   []haversine.Coord
 }
-
-// func whatTheFuck(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Printf("what in the actual fuck")
-// }
 
 func pulse(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("call to pulse triggered!")
